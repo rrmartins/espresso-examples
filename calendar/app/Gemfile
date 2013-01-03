@@ -1,0 +1,20 @@
+source :rubygems
+
+gem 'slim'
+
+gem 'e',    git: 'git://github.com/espresso/espresso.git'
+gem 'reel', git: 'git://github.com/celluloid/reel.git'
+
+gem 'data_mapper', '~> 1.2.0'
+gem 'dm-mysql-adapter'
+
+group :test do
+  # used to build test and tasks for DB migrations tasks
+  gem 'rake', '~> 10'
+
+  # used for unit testing
+  gem 'specular', '>= 0.1.8'
+
+  # allow to communicate to any Rack app via fake HTTP
+  gem 'sonar', '>= 0.1.2'
+end
