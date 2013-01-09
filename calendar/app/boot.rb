@@ -7,7 +7,7 @@ Bundler.require :default # requiring gems in default group
 
 module ECalendar
   # All controllers/models will go under ECalendar namespace.
-  # This will allow to  mount calendar into any Espresso app.
+  # This will allow to  mount calendar into any Espresso ap with a single line.
 end
 
 # current dir
@@ -29,32 +29,27 @@ DataMapper.setup(:default, 'mysql://dev@localhost/dev_ECalendar')
 # to make them work properly, we have to finalize them.
 DataMapper.finalize
 
-# above we loaded all controllers.
-# let's build the de-facto Espresso app:
+
+# Building and setup Espresso app
 ECalendarApp = EApp.new do
   
   # instructing app to keep sessions in memory
   session :memory
 
-  # instructing app to serve our assets at /assets base URL.
-  assets_url '/assets', true # if true omitted, assets wont be  served
-
-  # by default Espresso will search for assets in ./assets/ folder.
-  # but our assets are placed in ../public/ folder, so letting Espresso know about this.
-  assets_fullpath wd + '../public'
+  # mapping and serving assets
+  assets_map '/assets'
+  assets.append_path '../public'
 
   # some Rack middleware
   use Rack::ShowExceptions
   use Rack::CommonLogger
-
-  # mounting controllers inside ECalendar module.
-  mount ECalendar
 end
 
 # when we have some common setup for all(or some) controllers,
 # we do not repeatedly put that setup inside each controller.
 # instead we setup them all at once at app level.
-ECalendarApp.setup do |ctrl|
+# Please note that global setup should be defined before controllers mounted.
+ECalendarApp.global_setup do |ctrl|
 
   # both controllers use same engine,
   # do the same on :index action,
@@ -76,3 +71,7 @@ ECalendarApp.setup do |ctrl|
   end
 
 end
+
+# mounting all controllers found under ECalendar module.
+# Please note that controllers should be mounted after global setup defined.
+ECalendarApp.mount ECalendar

@@ -35,14 +35,12 @@ module ECalendar
     # here we setup `post_crud`, `put_crud` and `delete_crud` actions(automatically created by `crudify`)
     # to execute a hook that will run after a successful db operation.
     # the hook will update connections sticked to the date of CRUDed row.
-    setup :post_crud, :put_crud, :delete_crud do
-      after do
-        if response.status == 200 && date = params[:occur_at]
-          date = DateTime.parse(date).strftime('%Y-%m-%d')
-          # executing Index#entries(date) and sending output to connected clients
-          output = fetch(Index, :entries, date)
-          (Index::Connections[date]||[]).each { |s| s.data output }
-        end
+    after :post_crud, :put_crud, :delete_crud do
+      if response.status == 200 && date = params[:occur_at]
+        date = DateTime.parse(date).strftime('%Y-%m-%d')
+        # executing Index#entries(date) and sending output to connected clients
+        output = fetch(Index, :entries, date)
+        (Index::Connections[date]||[]).each { |s| s.data output }
       end
     end
 

@@ -1,8 +1,9 @@
 source :rubygems
 
 gem 'slim'
+gem 'sprockets'
 
-gem 'e',    git: 'git://github.com/espresso/espresso.git'
+gem 'e',    git: 'git://github.com/espresso/espresso.git', :branch => 0.4
 gem 'reel', git: 'git://github.com/celluloid/reel.git'
 
 gem 'data_mapper', '~> 1.2.0'
